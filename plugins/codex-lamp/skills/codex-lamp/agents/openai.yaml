@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Lamp"
+  short_description: "Control a Moonside Halo from Codex state"
+  default_prompt: "Use $codex-lamp to diagnose my Codex Lamp setup and recommend the next safe step."

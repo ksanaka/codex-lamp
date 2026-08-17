@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Codex Lamp">
+  <defs>
+    <linearGradient id="halo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffb432"/>
+      <stop offset="0.5" stop-color="#c800ff"/>
+      <stop offset="1" stop-color="#3e8cff"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="48" fill="none" stroke="url(#halo)" stroke-width="16"/>
+  <circle cx="64" cy="64" r="25" fill="#171a22"/>
+</svg>

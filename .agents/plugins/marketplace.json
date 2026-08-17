@@ -1,0 +1,20 @@
+{
+  "name": "codex-lamp-marketplace",
+  "interface": {
+    "displayName": "Codex Lamp"
+  },
+  "plugins": [
+    {
+      "name": "codex-lamp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-lamp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

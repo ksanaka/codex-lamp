@@ -1,0 +1,25 @@
+{
+  "name": "codex-lamp",
+  "version": "0.1.0",
+  "description": "Show Codex status on a Moonside Halo light.",
+  "license": "MIT",
+  "author": {
+    "name": "Codex Lamp Contributors"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Lamp",
+    "shortDescription": "Moonside Halo status lighting for Codex",
+    "longDescription": "Use a Moonside Halo as ambient status lighting for Codex lifecycle events, with setup, diagnostics, safe configuration, and explicit hardware testing.",
+    "developerName": "Codex Lamp Contributors",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Status Lighting",
+      "Diagnostics"
+    ],
+    "defaultPrompt": [
+      "Diagnose my Codex Lamp setup and recommend the next safe step."
+    ],
+    "composerIcon": "./assets/icon.svg"
+  }
+}
