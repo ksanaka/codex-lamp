@@ -6,6 +6,9 @@ Codex Lamp 把 Moonside Halo 变成 Codex 的环境状态灯。快速且故障�
 
 Codex Lamp 运行时无需网络。钩子处理不会等待蓝牙；灯具缺失、权限缺失或守护进程故障都不会中断 Codex。
 
+Codex Lamp 依赖本地 Codex App 或 CLI 发出的生命周期钩子。云端 Chat 和云端
+Codex 任务不会在你的 Mac 上运行这些钩子，因此当前版本不会因云端任务而改变灯光。
+
 ## 前置条件
 
 - macOS（首个版本不支持其他操作系统）
@@ -16,10 +19,24 @@ Codex Lamp 运行时无需网络。钩子处理不会等待蓝牙；灯具缺失
 
 安装器会在 `~/Library/Application Support/CodexLamp/` 下创建隔离运行环境，安装 `bleak>=0.22,<2`，并在 `~/.local/bin` 中创建 `codex-lamp` 符号链接。如果 shell 的 `PATH` 尚未包含该目录，请手动加入。
 
-## 从本地 ZIP 安装
+## 从 GitHub 安装
 
-当前支持的安装方式是本地 ZIP 加本地 Marketplace。下载
-`codex-lamp-v0.1.0-local.zip`，在包含该文件的目录中打开终端并解压：
+克隆官方仓库并运行安装脚本：
+
+```bash
+git clone https://github.com/ksanaka/codex-lamp.git
+cd codex-lamp
+./install.sh
+```
+
+脚本会检查 macOS、Python 和 Codex，创建或升级隔离运行环境，把克隆目录注册为
+`codex-lamp-marketplace`，并打印剩余的人工步骤。它不会编辑
+`~/.codex/config.toml`，也不会替你安装插件或批准钩子。
+
+### 从 Release ZIP 安装
+
+如果不使用 Git，请从 [Releases 页面](https://github.com/ksanaka/codex-lamp/releases)
+下载 `codex-lamp-v0.1.0-local.zip`，在包含该文件的目录中打开终端并解压：
 
 ```bash
 unzip codex-lamp-v0.1.0-local.zip
@@ -27,23 +44,16 @@ cd codex-lamp
 ./install.sh
 ```
 
-脚本会检查 macOS、Python 和 Codex，创建或升级隔离运行环境，并把解压后的目录注册为 `codex-lamp-marketplace`。它不会编辑 `~/.codex/config.toml`，也不会替你安装插件或批准钩子。
+同一个安装脚本会把解压后的目录注册为本地 Marketplace 来源。
 
 请在 Codex 中明确完成其余步骤：
 
 1. 打开 `/plugins`，选择 **Codex Lamp** Marketplace，然后安装 **Codex Lamp**。
 2. 打开 `/hooks`，检查六个运行 `bash "${PLUGIN_ROOT}/scripts/hook_runner.sh"` 的条目。
-3. 只有在认可该命令和当前解压内容后，才信任这些钩子。
+3. 只有在认可该命令和当前本地副本后，才信任这些钩子。
 4. 触发一次 Codex 会话事件，然后运行 `codex-lamp doctor`。
 
 安装插件不代表信任钩子。Codex 会跳过未受信任的插件钩子；钩子定义发生变化后必须重新检查。不要用危险的信任绕过参数或手工写入批准配置来跳过此步骤。
-
-## GitHub 发布后
-
-Codex Lamp 目前没有 GitHub 仓库。请勿使用虚构的仓库 URL 或
-Marketplace 来源；当前请使用上面的本地 ZIP 流程。真实仓库发布后，
-本节将提供准确的 clone 和 `codex plugin marketplace add` 命令。当前
-Marketplace 来源语法见 [Package your plugin](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli)。
 
 ## 灯光状态
 
@@ -121,8 +131,20 @@ codex-lamp test --dry-run
 
 ## 升级
 
-对于当前本地部署，请下载更新的本地 ZIP 版本并解压到新的
-`codex-lamp` 目录。进入这个新目录后刷新隔离运行环境：
+如果使用 Git 检出，请进入仓库、拉取新版本并刷新隔离运行环境：
+
+```bash
+cd codex-lamp
+git pull
+./plugins/codex-lamp/scripts/setup.sh
+```
+
+如果更新后的检出目录还需要重新注册为本地 Marketplace 来源，请改为运行
+`./install.sh`。
+
+如果使用 ZIP，请从
+[Releases 页面](https://github.com/ksanaka/codex-lamp/releases) 下载新版，
+并解压到新的 `codex-lamp` 目录。进入新目录后刷新隔离运行环境：
 
 ```bash
 ./plugins/codex-lamp/scripts/setup.sh
@@ -132,8 +154,7 @@ codex-lamp test --dry-run
 `./install.sh`。打开 `/plugins` 更新或重新安装 Codex Lamp；必要时重启
 ChatGPT 桌面应用。再次打开 `/hooks`，检查当前定义后再信任任何发生变化的
 钩子。运行环境 setup 使用 `pip install --upgrade`，但会保留已有的
-`config.json`。真实 GitHub 仓库发布后，本节才会加入 Git Marketplace
-刷新说明。
+`config.json`。
 
 ## 卸载
 
