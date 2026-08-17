@@ -11,6 +11,10 @@ Codex Lamp never needs network access at runtime. Hook processing does not wait
 for Bluetooth, and a missing lamp, missing permission, or daemon failure does
 not interrupt Codex.
 
+Codex Lamp responds to lifecycle hooks emitted by the local Codex App or CLI.
+Cloud Chat and cloud Codex tasks do not run these hooks on your Mac, so they do
+not change the lamp in this release.
+
 ## Prerequisites
 
 - macOS (the first release does not support other operating systems)
@@ -25,11 +29,26 @@ The installer creates an isolated runtime under
 places a `codex-lamp` symlink in `~/.local/bin`. Add that directory to `PATH` if
 your shell does not already include it.
 
-## Install from the local ZIP
+## Install from GitHub
 
-The supported current installation is the local ZIP and local Marketplace
-flow. Download `codex-lamp-v0.1.0-local.zip`, open Terminal in the directory
-that contains it, and extract it:
+Clone the canonical repository and run the installer:
+
+```bash
+git clone https://github.com/ksanaka/codex-lamp.git
+cd codex-lamp
+./install.sh
+```
+
+The script validates macOS, Python, and Codex; creates or upgrades the isolated
+runtime; registers the cloned directory as the `codex-lamp-marketplace`; and
+prints the remaining manual steps. It does not edit `~/.codex/config.toml`,
+install the plugin for you, or approve a hook.
+
+### Install from the release ZIP
+
+If you do not use Git, download `codex-lamp-v0.1.0-local.zip` from the
+[Releases page](https://github.com/ksanaka/codex-lamp/releases), open Terminal
+in the directory that contains it, and extract it:
 
 ```bash
 unzip codex-lamp-v0.1.0-local.zip
@@ -37,10 +56,8 @@ cd codex-lamp
 ./install.sh
 ```
 
-The script validates macOS, Python, and Codex; creates or upgrades the isolated
-runtime; registers the extracted directory as the `codex-lamp-marketplace`;
-and prints the remaining manual steps. It does not edit
-`~/.codex/config.toml`, install the plugin for you, or approve a hook.
+The same installer registers the extracted directory as the local Marketplace
+source.
 
 Finish explicitly in Codex:
 
@@ -48,20 +65,12 @@ Finish explicitly in Codex:
    **Codex Lamp**.
 2. Open `/hooks` and inspect the six entries that run
    `bash "${PLUGIN_ROOT}/scripts/hook_runner.sh"`.
-3. Trust those hooks only if you approve the command and this extracted copy.
+3. Trust those hooks only if you approve the command and this local copy.
 4. Trigger a Codex session event, then run `codex-lamp doctor`.
 
 Plugin installation does not imply hook trust. Codex skips untrusted bundled
 hooks, and a changed hook definition must be reviewed again. Do not bypass this
 review with a dangerous trust flag or a hand-edited approval.
-
-## After GitHub publication
-
-No GitHub repository exists for Codex Lamp yet. Do not use an invented
-repository URL or Marketplace source; use the local ZIP flow above. After a
-real repository is published, this section will provide its exact clone and
-`codex plugin marketplace add` commands. Marketplace source syntax is
-documented in [Package your plugin](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli).
 
 ## Lamp states
 
@@ -152,9 +161,22 @@ Only run `codex-lamp test` when physical lamp control is intended.
 
 ## Upgrade
 
-For the current local deployment, download the newer local ZIP release and
-extract it to a new `codex-lamp` directory. From that new directory, refresh
-the isolated runtime:
+For a Git checkout, enter the repository, pull the new version, and refresh the
+isolated runtime:
+
+```bash
+cd codex-lamp
+git pull
+./plugins/codex-lamp/scripts/setup.sh
+```
+
+Run `./install.sh` instead if the updated checkout also needs to be registered
+again as the local Marketplace source.
+
+For a ZIP installation, download the newer archive from the
+[Releases page](https://github.com/ksanaka/codex-lamp/releases) and extract it
+to a new `codex-lamp` directory. From that new directory, refresh the isolated
+runtime:
 
 ```bash
 ./plugins/codex-lamp/scripts/setup.sh
@@ -165,8 +187,7 @@ the registered local Marketplace source. Open `/plugins` to update or reinstall
 Codex Lamp, then restart the ChatGPT desktop app when required. Open `/hooks`
 and review the current definitions again before trusting any changed hook.
 Runtime setup uses `pip install --upgrade` but preserves an existing
-`config.json`. Git-backed Marketplace refresh instructions will be added after
-a real GitHub repository is published.
+`config.json`.
 
 ## Uninstall
 
